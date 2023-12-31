@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT sum(p.amount) FROM Payment p WHERE p.createdAt > CURRENT_DATE and p.userId=:userId")
     Optional<BigDecimal> sumTodaysPaymentsAmountByUserId(@Param("userId") Long userId);
+
+    Optional<Payment> findByAuthorizationCode(String authorizationCode);
 }
