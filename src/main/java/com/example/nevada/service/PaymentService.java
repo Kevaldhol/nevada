@@ -66,7 +66,12 @@ public class PaymentService {
         ResponseEntity<?> response = notificationServiceClient.validateOtp(paymentAuthorizeRequestDTO.getOtp(), payment.get().getTransactionId(), payment.get().getUserId());
         if (!(response.getStatusCode() == HttpStatus.OK))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        sendNotificationToMerchant(payment.get());
         return ResponseEntity.ok().build();
+    }
+
+    private void sendNotificationToMerchant(Payment payment) {
+        CompletableFuture.supplyAsync(() -> notificationServiceClient.sendNotificationToMarchant(payment));
     }
 
     private void sendOtpForAutorization(Long userId, Long transactionId) {
