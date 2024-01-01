@@ -63,10 +63,13 @@ public class PaymentService {
         if (!payment.isPresent()) {
             return new ResponseEntity<>(PaymentResponseDTO.builder().message("InValid Request").build(), HttpStatus.UNAUTHORIZED);
         }
-        ResponseEntity<?> response = notificationServiceClient.validateOtp(paymentAuthorizeRequestDTO.getOtp(), payment.get().getTransactionId(), payment.get().getUserId());
+        Payment paymentObj=payment.get();
+        ResponseEntity<?> response = notificationServiceClient.validateOtp(paymentAuthorizeRequestDTO.getOtp(), paymentObj.getTransactionId(), paymentObj.getUserId());
         if (!(response.getStatusCode() == HttpStatus.OK))
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        sendNotificationToMerchant(payment.get());
+        paymentObj.setStatus(Status.AUTHORIZED);
+        paymentRepository.save(paymentObj);
+        sendNotificationToMerchant(paymentObj);
         return ResponseEntity.ok().build();
     }
 
