@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 public class PaymentRequestDTO {
+    private Long transactionId;
     @NonNull
     private Long userId;
     @NonNull
